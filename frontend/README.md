@@ -6,7 +6,6 @@ Sistema de gerenciamento de tarefas desenvolvido como avaliação da disciplina 
 
 - **Pedro Salvador de Araujo**
 
-
 ## 📝 Descrição
 
 Aplicação web completa para gerenciamento de tarefas com autenticação Google, permitindo aos usuários criar, editar, visualizar e excluir suas tarefas de forma organizada.
@@ -36,6 +35,37 @@ Aplicação web completa para gerenciamento de tarefas com autenticação Google
 - Supabase (PostgreSQL)
 - CORS
 - dotenv
+
+## 📚 Documentação da API
+
+A API possui documentação interativa completa usando Swagger/OpenAPI.
+
+### Acessar a Documentação
+
+Com o servidor backend rodando, acesse:
+```
+http://localhost:3000/api-docs
+```
+
+### Recursos da Documentação
+
+- ✅ Listagem completa de todos os endpoints
+- ✅ Descrição detalhada de cada operação
+- ✅ Exemplos de requisição e resposta
+- ✅ Teste interativo dos endpoints
+- ✅ Modelos de dados (schemas)
+- ✅ Códigos de resposta HTTP
+
+### Endpoints Documentados
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/` | Verifica status da API |
+| POST | `/api/tarefas` | Cria uma nova tarefa |
+| GET | `/api/tarefas/usuario/:usuario_id` | Lista tarefas do usuário |
+| GET | `/api/tarefas/:id` | Busca tarefa por ID |
+| PUT | `/api/tarefas/:id` | Atualiza uma tarefa |
+| DELETE | `/api/tarefas/:id` | Exclui uma tarefa |
 
 ## 📋 Pré-requisitos
 
@@ -222,8 +252,7 @@ tarefas-app/
 
 Este projeto foi desenvolvido para fins educacionais como parte da avaliação da disciplina Frameworks Modernos para Desenvolvimento de Sistemas.
 
-
 ---
 
-**Data de Entrega:** 12 de dezembro de 2025  
+**Data de Entrega:** 13 de dezembro de 2025  
 **Disciplina:** Frameworks Modernos para Desenvolvimento de Sistemas

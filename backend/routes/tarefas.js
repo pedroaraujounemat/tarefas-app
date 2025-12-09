@@ -2,7 +2,36 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/database');
 
-// CREATE - Criar nova tarefa
+/**
+ * @swagger
+ * /api/tarefas:
+ *   post:
+ *     summary: Cria uma nova tarefa
+ *     tags: [Tarefas]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TarefaInput'
+ *     responses:
+ *       201:
+ *         description: Tarefa criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Tarefa criada com sucesso
+ *                 data:
+ *                   $ref: '#/components/schemas/Tarefa'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/', async (req, res) => {
   try {
     const { titulo, descricao, concluida, usuario_id } = req.body;
@@ -29,10 +58,36 @@ router.post('/', async (req, res) => {
   }
 });
 
-// READ - Listar todas as tarefas de um usuário
+/**
+ * @swagger
+ * /api/tarefas/usuario/{usuario_id}:
+ *   get:
+ *     summary: Lista todas as tarefas de um usuário
+ *     tags: [Tarefas]
+ *     parameters:
+ *       - in: path
+ *         name: usuario_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário
+ *         example: user123abc
+ *     responses:
+ *       200:
+ *         description: Lista de tarefas retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Tarefa'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/usuario/:usuario_id', async (req, res) => {
   try {
     const { usuario_id } = req.params;
+    console.log('🔍 Buscando tarefas para usuário:', usuario_id);
 
     const { data, error } = await supabase
       .from('tarefas')
@@ -40,15 +95,45 @@ router.get('/usuario/:usuario_id', async (req, res) => {
       .eq('usuario_id', usuario_id)
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Erro do Supabase:', error);
+      throw error;
+    }
 
+    console.log('✅ Tarefas encontradas:', data.length);
     res.json(data);
   } catch (error) {
+    console.error('❌ Erro no endpoint:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// READ - Buscar tarefa por ID
+/**
+ * @swagger
+ * /api/tarefas/{id}:
+ *   get:
+ *     summary: Busca uma tarefa específica por ID
+ *     tags: [Tarefas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da tarefa
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Tarefa encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tarefa'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,7 +156,44 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// UPDATE - Atualizar tarefa
+/**
+ * @swagger
+ * /api/tarefas/{id}:
+ *   put:
+ *     summary: Atualiza uma tarefa existente
+ *     tags: [Tarefas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da tarefa
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TarefaUpdate'
+ *     responses:
+ *       200:
+ *         description: Tarefa atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Tarefa atualizada com sucesso
+ *                 data:
+ *                   $ref: '#/components/schemas/Tarefa'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,7 +222,34 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE - Excluir tarefa
+/**
+ * @swagger
+ * /api/tarefas/{id}:
+ *   delete:
+ *     summary: Exclui uma tarefa
+ *     tags: [Tarefas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da tarefa a ser excluída
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Tarefa excluída com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Tarefa excluída com sucesso
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
